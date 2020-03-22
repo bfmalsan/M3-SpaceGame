@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerBullet : MonoBehaviour
+public class EnemyBullet : MonoBehaviour
 {
     float speed;
 
     // Start is called before the first frame update
     void Start()
     {
-        speed = 8f;
+        speed = 6f;
     }
 
     // Update is called once per frame
@@ -17,13 +17,13 @@ public class PlayerBullet : MonoBehaviour
     {
         Vector2 pos = transform.position;
 
-        pos = new Vector2(pos.x, pos.y + speed * Time.deltaTime);
+        pos = new Vector2(pos.x, pos.y - speed * Time.deltaTime);
 
         transform.position = pos;
 
-        Vector2 max = Camera.main.ViewportToWorldPoint(new Vector2(1, 1));
+        Vector2 min = Camera.main.ViewportToWorldPoint(new Vector2(0, 0));
 
-        if(transform.position.y > max.y)
+        if (transform.position.y < min.y)
         {
             Destroy(gameObject);
         }
@@ -31,15 +31,15 @@ public class PlayerBullet : MonoBehaviour
 
     private void OnCollisionEnter2D(UnityEngine.Collision2D collision)
     {
-        
 
-        if(collision.gameObject.tag.Equals("Enemy"))
+
+        if (collision.gameObject.tag.Equals("Player"))
         {
 
             Destroy(gameObject);
-            collision.gameObject.GetComponent<EnemyControl>().health--;
+            collision.gameObject.GetComponent<Player>().health--;
             //Destroy(collision.gameObject);//destroy enemy
-            
+
         }
     }
 }
