@@ -9,22 +9,13 @@ public class EnemySpawner : MonoBehaviour
 {
 
     public GameObject enemyPrefab;
+    public GameManager gameManager;
 
     float maxSpawnRateInSeconds = 3f;
 
-    bool canSpawn = true;
+    int numSpawnPerRound = 10;
+    int numLeft;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void Spawn()
     {
@@ -34,14 +25,20 @@ public class EnemySpawner : MonoBehaviour
         GameObject anEnemy = (GameObject)Instantiate(enemyPrefab);
         anEnemy.transform.position = new Vector2(Random.Range(min.x, max.x), max.y);
 
-        canSpawn = false;
         //yield return new WaitForSeconds(maxSpawnRateInSeconds);
         Invoke("Spawn", maxSpawnRateInSeconds);
-        canSpawn = true;
+
+        numLeft--;
+        if(numLeft < 0)
+        {
+            gameManager.EndRound();
+        }
+        
     }
 
     public void StartSpawner()
     {
+        numLeft = numSpawnPerRound;
         Invoke("Spawn", maxSpawnRateInSeconds);
     }
 

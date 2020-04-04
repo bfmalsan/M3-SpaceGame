@@ -1,17 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     public GameObject playButton;
     public GameObject playerObject;
     public GameObject spawnerObject;
+    public GameObject upgradePanel;
+    public TextMeshProUGUI roundUIText;
+    private int roundNumber;
 
     public enum GameManagerState
     {
         Opening,
         GamePlay,
+        StartRound,
+        EndRound,
         GameOver,
     }
 
@@ -29,11 +35,14 @@ public class GameManager : MonoBehaviour
         {
             case GameManagerState.Opening:
                 playButton.SetActive(true);
+                
 
                 break;
             case GameManagerState.GamePlay:
                 //Hide play button
                 playButton.SetActive(false);
+                roundNumber = 1;
+                roundUIText.text = "Round: " + roundNumber.ToString();
 
                 //Show player and call init
                 playerObject.GetComponent<Player>().Init();
@@ -41,6 +50,28 @@ public class GameManager : MonoBehaviour
                 //Start spawner
                 spawnerObject.GetComponent<EnemySpawner>().StartSpawner();
                 break;
+
+            case GameManagerState.StartRound:
+                //Disable the upgradepanel,Start the spawner/shooting and increment the round number
+                upgradePanel.SetActive(false);
+
+                roundNumber++;
+                roundUIText.text = "Round: " + roundNumber.ToString();
+
+                playerObject.GetComponent<PlayerShoot>().StartShooting();
+                spawnerObject.GetComponent<EnemySpawner>().StartSpawner();
+
+                break;
+
+            case GameManagerState.EndRound:
+                //When all of the enemies are killed in a round show the upgrade screen
+                spawnerObject.GetComponent<EnemySpawner>().StopSpawner();
+                playerObject.GetComponent<PlayerShoot>().StopShooting();
+
+                upgradePanel.SetActive(true);
+
+                break;
+
             case GameManagerState.GameOver:
                 //Stop spawning enemies
                 spawnerObject.GetComponent<EnemySpawner>().StopSpawner();
@@ -65,6 +96,18 @@ public class GameManager : MonoBehaviour
     public void StartGamePlay()
     {
         gmState = GameManagerState.GamePlay;
+        UpdateGameManagerState();
+    }
+
+    public void EndRound()
+    {
+        gmState = GameManagerState.EndRound;
+        UpdateGameManagerState();
+    }
+
+    public void StartRound()
+    {
+        gmState = GameManagerState.StartRound;
         UpdateGameManagerState();
     }
 
