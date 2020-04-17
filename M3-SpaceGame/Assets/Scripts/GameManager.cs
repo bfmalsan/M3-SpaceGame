@@ -116,4 +116,14 @@ public class GameManager : MonoBehaviour
         gmState = GameManagerState.Opening;
         UpdateGameManagerState();
     }
+
+    public int GetRoundNumber()
+    {
+        return roundNumber;
+    }
+
+    public void SetRoundNumber(int value)
+    {
+        roundNumber = value;
+    }
 }

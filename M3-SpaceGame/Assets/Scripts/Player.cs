@@ -8,19 +8,20 @@ public class Player : MonoBehaviour
 {
     public GameObject GameManagerGO;
 
-    public int maxHealth = 3;
-    public int health = 3;
+    public int startHealth = 3;
+    public int health;
 
     public TextMeshProUGUI healthUIText;
 
     public void Init()
     {
-        health = maxHealth;
+        health = startHealth;
 
         healthUIText.text = "Health: " + health.ToString();
 
         gameObject.SetActive(true);
 
+        GetComponent<PlayerShoot>().ResetValues();
         GetComponent<PlayerShoot>().StartShooting();
     }
 
@@ -28,7 +29,7 @@ public class Player : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("EnemyBullet"))
         {
-            health--;
+            DecreaseHealth(1);
 
             healthUIText.text = "Health: " + health.ToString();
 
@@ -40,9 +41,21 @@ public class Player : MonoBehaviour
                 gameObject.SetActive(false);
             }
 
-            //Destroy the object they we hit
+            //Destroy the object that we hit
             Destroy(collision.gameObject);
 
         }       
+    }
+
+    public void IncreaseHealth(int value)
+    {
+        health += value;
+        healthUIText.text = "Health: " + health.ToString();
+    }
+
+    public void DecreaseHealth(int value)
+    {
+        health -= value;
+        healthUIText.text = "Health: " + health.ToString();
     }
 }

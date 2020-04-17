@@ -42,4 +42,14 @@ public class EnemyControl : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    public void IncreaseHealth(int value)
+    {
+        health += value;
+    }
+
+    public void DecreaseHealth(int value)
+    {
+        health -= value;
+    }
 }

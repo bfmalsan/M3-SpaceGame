@@ -4,31 +4,25 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    private Vector3 mousePosition;
+    public float moveSpeed = 0.1f;
 
-    public float speed;
-
-    
-
-    // Start is called before the first frame update
+    // Use this for initialization
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Get the input from the user
-        float moveHorizontal = Input.GetAxisRaw("Horizontal");
-        float moveVertical = Input.GetAxisRaw("Vertical");
-
-        //Get a direction vector and normalize it so you get a unit circle
-        Vector2 direction = new Vector2(moveHorizontal,moveVertical).normalized;
-
-        Move(direction);
+        mousePosition = Input.mousePosition;
+        mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+        Move(mousePosition);
+  
     }
-
-    private void Move(Vector2 direction)
+    
+    private void Move(Vector3 mousePosition)
     {
         Vector2 min = Camera.main.ViewportToWorldPoint(new Vector2(0, 0));//Bottom left of screen
         Vector2 max = Camera.main.ViewportToWorldPoint(new Vector2(1, 1));//Top right of screen
@@ -40,19 +34,10 @@ public class PlayerMovement : MonoBehaviour
         max.y -= .5f;
         min.y += .5f;
 
-        //Get the current position
-        Vector2 pos = transform.position;
+        mousePosition.x = Mathf.Clamp(mousePosition.x, min.x, max.x);
+        mousePosition.y = Mathf.Clamp(mousePosition.y, min.y, max.y);
 
-        //Add the movement to the position
-        pos += direction * speed * Time.deltaTime;
-
-        //Make sure the ship does not leave the bounds of the screen
-        pos.x = Mathf.Clamp(pos.x, min.x, max.x);
-        pos.y = Mathf.Clamp(pos.y, min.y, max.y);
-
-        //Set the position of the ship to the new position
-        transform.position = pos;
-
+        transform.position = Vector2.Lerp(transform.position, mousePosition, moveSpeed);
     }
-
+    
 }

@@ -25,6 +25,13 @@ public class EnemySpawner : MonoBehaviour
         GameObject anEnemy = (GameObject)Instantiate(enemyPrefab);
         anEnemy.transform.position = new Vector2(Random.Range(min.x, max.x), max.y);
 
+        //Increase the health of each enemy by the round number for now
+        int roundNumber = gameManager.GetComponent<GameManager>().GetRoundNumber();
+        if (roundNumber > 1)
+        {
+            anEnemy.GetComponent<EnemyControl>().IncreaseHealth(roundNumber - 1);
+        }
+
         //yield return new WaitForSeconds(maxSpawnRateInSeconds);
         Invoke("Spawn", maxSpawnRateInSeconds);
 

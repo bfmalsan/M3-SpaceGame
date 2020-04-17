@@ -9,12 +9,14 @@ public class PlayerShoot : MonoBehaviour
     public GameObject spawnPoint;
 
     public float fireRate = 0.5F;
+    public int damage = 1;
 
     public void Shoot() {
 
         GameObject bullet = (GameObject)Instantiate(PlayerBulletGO);
 
         bullet.transform.position = spawnPoint.transform.position;
+        bullet.GetComponent<PlayerBullet>().SetDamage(damage);
        
     }
 
@@ -27,4 +29,31 @@ public class PlayerShoot : MonoBehaviour
     {
         CancelInvoke("Shoot");
     }
+
+    public void IncreaseDamage(int value)
+    {
+        damage += value;
+    }
+
+    public void DecreaseDamage(int value)
+    {
+        damage -= value;
+    }
+
+    public void ShootFaster(float value)
+    {
+        fireRate -= value;
+    }
+
+    public void ShootSlower(float value)
+    {
+        fireRate += value;
+    }
+
+    public void ResetValues()
+    {
+        fireRate = 1f;
+        damage = 1;
+    }
+
 }
