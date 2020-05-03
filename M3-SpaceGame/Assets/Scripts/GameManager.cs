@@ -59,16 +59,23 @@ public class GameManager : MonoBehaviour
                 roundUIText.text = "Round: " + roundNumber.ToString();
 
                 playerObject.GetComponent<PlayerShoot>().StartShooting();
+                playerObject.GetComponent<PlayerMovement>().enabled = true;
+                playerObject.GetComponent<BoxCollider2D>().enabled = true;
                 spawnerObject.GetComponent<EnemySpawner>().StartSpawner();
 
                 break;
 
             case GameManagerState.EndRound:
                 //When all of the enemies are killed in a round show the upgrade screen
-                spawnerObject.GetComponent<EnemySpawner>().StopSpawner();
-                playerObject.GetComponent<PlayerShoot>().StopShooting();
+                //spawnerObject.GetComponent<EnemySpawner>().StopSpawner();
+                if(playerObject.GetComponent<Player>().GetHealth() != 0){
+                    playerObject.GetComponent<Player>().IncreaseUpgradePoints();
+                    playerObject.GetComponent<PlayerShoot>().StopShooting();
+                    playerObject.GetComponent<PlayerMovement>().enabled = false;
+                    playerObject.GetComponent<BoxCollider2D>().enabled = false;
 
-                upgradePanel.SetActive(true);
+                    upgradePanel.SetActive(true);
+                }
 
                 break;
 

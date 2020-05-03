@@ -123,6 +123,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 1
+  upgradePowerUpPrefab: {fileID: 7599887964812366973, guid: 76f44794b8f3946df9c37719dd2d955c,
+    type: 3}
 --- !u!114 &4821574659617114511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,7 +140,8 @@ MonoBehaviour:
   EnemyBulletGO: {fileID: 4203987207875052248, guid: 6ec8b8db9bb6d4926865c31e66d70ddd,
     type: 3}
   spawnPoint: {fileID: 8005281451569534407}
-  fireRate: 2
+  minFireRate: 1
+  maxFireRate: 3
 --- !u!1 &8005281451569534407
 GameObject:
   m_ObjectHideFlags: 0

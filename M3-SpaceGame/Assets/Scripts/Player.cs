@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
 
     public int startHealth = 3;
     public int health;
+    public int upgradePoints = 0;
+    public TextMeshProUGUI pointsUIText;
 
     public TextMeshProUGUI healthUIText;
 
@@ -19,6 +21,8 @@ public class Player : MonoBehaviour
 
         healthUIText.text = "Health: " + health.ToString();
 
+        upgradePoints = 0;
+
         gameObject.SetActive(true);
 
         GetComponent<PlayerShoot>().ResetValues();
@@ -27,7 +31,7 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("EnemyBullet"))
+        if(collision.gameObject.CompareTag("EnemyBullet"))
         {
             DecreaseHealth(1);
 
@@ -45,6 +49,25 @@ public class Player : MonoBehaviour
             Destroy(collision.gameObject);
 
         }       
+        if(collision.gameObject.CompareTag("Enemy")){
+            DecreaseHealth(1);
+
+             if (health <= 0)
+            {
+                //set GameManager state to GameOver
+                GameManagerGO.GetComponent<GameManager>().SetGameManagerState(GameManager.GameManagerState.GameOver);
+
+                gameObject.SetActive(false);
+            }
+
+            collision.gameObject.GetComponent<EnemyControl>().SetHealth(0);
+        }
+
+        if(collision.gameObject.CompareTag("Upgrade")){
+            IncreaseUpgradePoints();
+            
+            Destroy(collision.gameObject);
+        }
     }
 
     public void IncreaseHealth(int value)
@@ -58,4 +81,24 @@ public class Player : MonoBehaviour
         health -= value;
         healthUIText.text = "Health: " + health.ToString();
     }
+
+    public int GetHealth(){
+        return health;
+    }
+
+    public int GetUpgradePoints(){
+        return upgradePoints;
+    }
+
+    public void IncreaseUpgradePoints(){
+        upgradePoints++;
+        pointsUIText.text = upgradePoints.ToString();
+    }
+    public void DecreaseUpgradePoints(){
+        if(upgradePoints > 0){
+            upgradePoints--;
+            pointsUIText.text = upgradePoints.ToString();
+        }
+    }
+
 }

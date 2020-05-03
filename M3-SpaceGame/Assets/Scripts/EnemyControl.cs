@@ -7,10 +7,18 @@ public class EnemyControl : MonoBehaviour
     float speed;
     public int health = 1;
 
+    GameObject spawner;
+    public GameObject upgradePowerUpPrefab;
+
     // Start is called before the first frame update
     void Start()
     {
         speed = 1f;
+        spawner = GameObject.FindGameObjectWithTag("Spawner");
+        if(spawner == null)
+        {
+            Debug.Log("Couldn't find spawner");
+        }
     }
 
     // Update is called once per frame
@@ -19,8 +27,10 @@ public class EnemyControl : MonoBehaviour
         //If the enemies health hits zero, kill it
         if(health <= 0)
         {
-            //Todo: play death animation
+            //Todo: play death animation 
+            DropUpgrade();
             Destroy(gameObject);
+            spawner.GetComponent<EnemySpawner>().removeEnemyFromList(gameObject);
         }
 
         //Move the enemy downward
@@ -40,6 +50,7 @@ public class EnemyControl : MonoBehaviour
         if (transform.position.y < min.y)
         {
             Destroy(gameObject);
+            spawner.GetComponent<EnemySpawner>().removeEnemyFromList(gameObject);
         }
     }
 
@@ -51,5 +62,21 @@ public class EnemyControl : MonoBehaviour
     public void DecreaseHealth(int value)
     {
         health -= value;
+    }
+
+    public void SetHealth(int value) => health = value;
+
+    public void DropUpgrade(){
+        int randNum = Random.Range(0, 101);
+
+        if(randNum <= 5){
+            //drop an upgrade
+            GameObject powerUp = Instantiate(upgradePowerUpPrefab, 
+                                            new Vector3(transform.position.x, transform.position.y, 0),
+                                            Quaternion.identity);
+        }
+        else{
+            //nothing
+        }
     }
 }

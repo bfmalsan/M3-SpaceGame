@@ -42,7 +42,14 @@ public class PlayerShoot : MonoBehaviour
 
     public void ShootFaster(float value)
     {
-        fireRate -= value;
+        if(fireRate - value <= 0.1f) {
+            fireRate = 0.1f;
+        }
+        else
+        {
+            fireRate -= value;
+        }
+
     }
 
     public void ShootSlower(float value)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Todo: spawn multiple enemies at once
-//Todo: can only spawn a certain number of enemies per round
+
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -11,11 +11,27 @@ public class EnemySpawner : MonoBehaviour
     public GameObject enemyPrefab;
     public GameManager gameManager;
 
-    float maxSpawnRateInSeconds = 3f;
+    List<GameObject> enemyList;
 
-    int numSpawnPerRound = 10;
+    float maxSpawnRateInSeconds = 2f;
+
+    int numSpawnPerRound = 5;
     int numLeft;
 
+    public void Start()
+    {
+        enemyList = new List<GameObject>();
+        numLeft = numSpawnPerRound;
+    }
+
+    public void Update()
+    {
+        if (numLeft == 0 && enemyList.Count.Equals(0))
+        {   
+            numLeft = -1;
+            gameManager.EndRound();
+        }
+    }
 
     public void Spawn()
     {
@@ -23,34 +39,40 @@ public class EnemySpawner : MonoBehaviour
         Vector2 max = Camera.main.ViewportToWorldPoint(new Vector2(1, 1));//Top right of screen
 
         GameObject anEnemy = (GameObject)Instantiate(enemyPrefab);
-        anEnemy.transform.position = new Vector2(Random.Range(min.x, max.x), max.y);
+        anEnemy.transform.position = new Vector2(Random.Range(min.x + 1, max.x - 1), max.y);
+
+        enemyList.Add(anEnemy);
+        //Debug.Log("Spawned: " + enemyList.Count);
 
         //Increase the health of each enemy by the round number for now
         int roundNumber = gameManager.GetComponent<GameManager>().GetRoundNumber();
-        if (roundNumber > 1)
-        {
-            anEnemy.GetComponent<EnemyControl>().IncreaseHealth(roundNumber - 1);
-        }
+        anEnemy.GetComponent<EnemyControl>().IncreaseHealth(roundNumber - 1);
 
         //yield return new WaitForSeconds(maxSpawnRateInSeconds);
         Invoke("Spawn", maxSpawnRateInSeconds);
 
         numLeft--;
-        if(numLeft < 0)
+        if(numLeft <= 0)
         {
-            gameManager.EndRound();
+            StopSpawner();
         }
         
     }
 
     public void StartSpawner()
     {
-        numLeft = numSpawnPerRound;
-        Invoke("Spawn", maxSpawnRateInSeconds);
+        numLeft = numSpawnPerRound + gameManager.GetComponent<GameManager>().GetRoundNumber();
+        Invoke("Spawn", 0);
     }
 
     public void StopSpawner()
     {
         CancelInvoke("Spawn");
+    }
+
+    public void removeEnemyFromList(GameObject enemy)
+    {
+        enemyList.Remove(enemy);
+        //Debug.Log("Removed: " + enemyList.Count);
     }
 }
